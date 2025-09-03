@@ -6,7 +6,9 @@
     <title>Document</title>
     <style>
       body {
-        font-family: "IBM Plex Mono", sans-serif;
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-style: normal;
       }
 
       html,
@@ -26,7 +28,12 @@
       }
 
       #container h1 {
-        font-size: 15vh;
+        font-size: 12vw;
+        text-align: center;
+        word-break: keep-all;
+        white-space: pre-line;
+        width: 100vw;
+        box-sizing: border-box;
       }
     </style>
   </head>
@@ -42,31 +49,37 @@
       rel="stylesheet"
     />
     <script>
-      const happyDay = new Date("November 10, 2023 00:00:00").getTime();
+      // 기준일과 현재의 차이를 일 단위로 계산, HH:MM:SS.mmm 표기, 남음은 '-', 지남은 '+'
+      const happyDay = new Date("November 10, 2023 00:00:00");
+
+      function pad(num, size = 2) {
+        let s = num.toString();
+        while (s.length < size) s = "0" + s;
+        return s;
+      }
 
       setInterval(() => {
-        const now = new Date().getTime();
-        const daysLeft = happyDay - now;
+        const now = new Date();
+        const diff = now.getTime() - happyDay.getTime();
+        const sign = diff >= 0 ? "+" : "-";
+        const absDiff = Math.abs(diff);
 
-        const d = Math.floor(daysLeft / (1000 * 60 * 60 * 24))
-          .toString(10)
-          .padStart(4);
-        const h = Math.floor(
-          (daysLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        )
-          .toString(10)
-          .padStart(4);
-        const m = Math.floor((daysLeft % (1000 * 60 * 60)) / (1000 * 60))
-          .toString(10)
-          .padStart(4);
-        const s = Math.floor((daysLeft % (1000 * 60)) / 1000)
-          .toString(10)
-          .padStart(4);
+        const days = Math.floor(absDiff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (absDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor((absDiff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((absDiff % (1000 * 60)) / 1000);
+        const millis = absDiff % 1000;
 
+        const timeStr = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}.${pad(
+          millis,
+          3
+        )}`;
         document.getElementById(
           "inner"
-        ).innerHTML = `D${d}\nH${h}\nM${m}\nS${s}`;
-      }, 1000);
+        ).innerHTML = `${sign}${days} ${timeStr}`;
+      }, 10);
     </script>
   </body>
 </html>
